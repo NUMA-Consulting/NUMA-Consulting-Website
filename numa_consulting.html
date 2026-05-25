@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUMA Consulting — Northeastern University</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-900: #0a2318;
+    --green-800: #0f3524;
+    --green-700: #155030;
+    --green-600: #1a6640;
+    --green-500: #1f7a4c;
+    --green-400: #2a9e63;
+    --green-300: #48c483;
+    --green-200: #8dddb0;
+    --green-100: #c6f0d8;
+    --green-50: #edfaf3;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --cream: #faf8f4;
+    --white: #ffffff;
+    --text-dark: #0f1f17;
+    --text-mid: #2a4035;
+    --text-light: #5a7a6a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 35, 24, 0.97);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4rem;
+    height: 70px;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+  }
+
+  .nav-logo .c-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--green-400);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+    color: white;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--green-900) !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 600 !important;
+  }
+
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--green-900) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--green-900);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 70px;
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(42,158,99,0.12) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 60% 80%, rgba(21,80,48,0.2) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(42,158,99,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42,158,99,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 4rem 2rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--green-300);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--green-900);
+    padding: 15px 36px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+  }
+
+  .btn-outline {
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 15px 36px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+  }
+
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .hero-stats {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4rem;
+    z-index: 2;
+  }
+
+  .stat {
+    text-align: center;
+    color: white;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+
+  /* SECTION LAYOUT */
+  section { padding: 6rem 4rem; }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green-500);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--green-400);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--green-900);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    line-height: 1.8;
+    max-width: 680px;
+    font-weight: 300;
+  }
+
+  /* ABOUT */
+  #about {
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-card {
+    background: var(--green-900);
+    border-radius: 8px;
+    padding: 3rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(42,158,99,0.15);
+  }
+
+  .about-card-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .about-card p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.8);
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  .about-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-50);
+    border: 1px solid var(--green-200);
+    color: var(--green-700);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green-500);
+  }
+
+  /* SERVICES / TEAM */
+  #team {
+    background: var(--cream);
+    padding: 6rem 4rem;
+  }
+
+  .team-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+
+  .team-header .section-label { justify-content: center; }
+  .team-header .section-label::before { display: none; }
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .role-card {
+    background: var(--white);
+    border: 1px solid rgba(21,80,48,0.1);
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  .role-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(10,35,24,0.1);
+  }
+
+  .role-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .role-card.pm::before { background: var(--gold); }
+  .role-card.sc::before { background: var(--green-500); }
+  .role-card.jc::before { background: var(--green-300); }
+
+  .role-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--green-100);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .role-title {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-800);
+    margin-bottom: 1rem;
+  }
+
+  .role-desc {
+    font-size: 0.92rem;
+    color: var(--text-light);
+    line-height: 1.7;
+  }
+
+  /* EXPERIENCE / CO-OPS */
+  .coops-strip {
+    background: var(--green-900);
+    padding: 2.5rem 4rem;
+    text-align: center;
+  }
+
+  .coops-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1.5rem;
+  }
+
+  .coops-list {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .coop-item {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .coop-item:hover { color: var(--gold); }
+
+  /* CLIENTS */
+  #clients {
+    background: var(--white);
+    padding: 6rem 4rem;
+  }
+
+  .clients-header {
+    max-width: 600px;
+    margin-bottom: 4rem;
+  }
+
+  .clients-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+  }
+
+  .client-card {
+    background: var(--cream);
+    border: 1px solid rgba(21,80,48,0.08);
+    border-radius: 8px;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--green-800);
+    text-align: center;
+    transition: all 0.2s;
+    min-height: 80px;
+    letter-spacing: 0.02em;
+  }
+
+  .client-card:hover {
+    background: var(--green-50);
+    border-color: var(--green-200);
+    color: var(--green-700);
+    transform: translateY(-2px);
+  }
+
+  /* IMPACT */
+  #impact {
+    background: var(--cream);
+    padding: 6rem 4rem;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin-top: 3rem;
+  }
+
+  .testimonial {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 2.5rem;
+    border-left: 4px solid var(--green-400);
+    position: relative;
+  }
+
+  .testimonial.featured {
+    border-left-color: var(--gold);
+  }
+
+  .testimonial-quote {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--green-200);
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-text {
+    font-size: 0.97rem;
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-50);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--green-700);
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-source {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-600);
+  }
+
+  /* CTA */
+  #contact {
+    background: var(--green-900);
+    padding: 8rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 30% 50%, rgba(42,158,99,0.12) 0%, transparent 55%),
+      radial-gradient(circle at 70% 30%, rgba(201,168,76,0.07) 0%, transparent 45%);
+  }
+
+  .contact-content {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  #contact .section-label {
+    justify-content: center;
+    color: var(--green-300);
+  }
+
+  #contact .section-label::before { display: none; }
+
+  #contact .section-title {
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  #contact .section-body {
+    color: rgba(255,255,255,0.6);
+    max-width: none;
+    margin-bottom: 3rem;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--green-900);
+    padding: 18px 44px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+
+  .cta-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(201,168,76,0.4);
+  }
+
+  .cta-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .contact-note {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .contact-email {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .contact-email a {
+    color: var(--green-300);
+    text-decoration: none;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--green-900);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  /* SCROLL ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .roles-grid { grid-template-columns: 1fr; }
+    .clients-grid { grid-template-columns: repeat(2, 1fr); }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .coops-strip { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="c-icon">C</div>
+    NUMA <span>Consulting</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#team">Our Team</a></li>
+    <li><a href="#clients">Clients</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#contact" class="nav-cta">Work With Us</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Northeastern University · Founded 2021</div>
+    <h1>Strategic Marketing,<br><em>Pro Bono.</em></h1>
+    <p class="hero-sub">
+      NUMA Consulting is a student-run marketing agency dedicated to delivering impactful strategies for businesses — completely free of charge.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">
+        Request Our Services
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#about" class="btn-outline">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">10+</span>
+      <span class="stat-label">Past Clients</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">50%</span>
+      <span class="stat-label">Instagram Growth</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Pro Bono</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text fade-up">
+    <div class="about-badge">Part of NUMA · Northeastern University</div>
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">A student-powered<br>marketing consultancy</h2>
+    <p class="section-body">
+      Founded in 2021, NUMA Consulting (NUMAC) is a student-run marketing consulting agency at Northeastern University dedicated to delivering strategic marketing solutions.
+    </p>
+    <br>
+    <p class="section-body">
+      As a subsidiary of the Northeastern University Marketing Association (NUMA), NUMAC specializes in consulting services, partnering with clients to address their marketing challenges and implement impactful strategies — at no cost to you.
+    </p>
+  </div>
+  <div class="about-visual fade-up">
+    <div class="about-card">
+      <div class="about-card-quote">"</div>
+      <p>Our consultants bring real-world co-op and internship experience from leading organizations, channeling that expertise into meaningful marketing work for our partners.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COOPS STRIP -->
+<div class="coops-strip">
+  <div class="coops-label">Our consultants have co-op experience at</div>
+  <div class="coops-list">
+    <div class="coop-item">MFS Investment Management</div>
+    <div class="coop-item">Boston Consulting Group</div>
+    <div class="coop-item">VML</div>
+    <div class="coop-item">PwC</div>
+    <div class="coop-item">Wayfair</div>
+    <div class="coop-item">New Balance</div>
+    <div class="coop-item">Keurig Dr Pepper</div>
+    <div class="coop-item">L'Oréal</div>
+    <div class="coop-item">TikTok Shop</div>
+  </div>
+</div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="team-header fade-up">
+    <div class="section-label">Your Team</div>
+    <h2 class="section-title">Who you'll work with</h2>
+    <p class="section-body" style="margin: 0 auto;">
+      Every client engagement is led by a dedicated team structured for excellence — from strategic oversight to hands-on execution.
+    </p>
+  </div>
+  <div class="roles-grid">
+    <div class="role-card pm fade-up">
+      <div class="role-number">01</div>
+      <div class="role-title">Project Manager</div>
+      <p class="role-desc">An upperclassman with at least one prior co-op or internship under their belt. They oversee project scope, manage the team, and serve as your primary point of contact throughout the engagement.</p>
+    </div>
+    <div class="role-card sc fade-up">
+      <div class="role-number">02</div>
+      <div class="role-title">Senior Consultant</div>
+      <p class="role-desc">Experienced upperclassmen who lead complex tasks, support client-facing meetings, and mentor junior team members — bringing depth and strategic thinking to every deliverable.</p>
+    </div>
+    <div class="role-card jc fade-up">
+      <div class="role-number">03</div>
+      <div class="role-title">Marketing Consultant</div>
+      <p class="role-desc">Passionate underclassmen who collaborate closely with senior team members to ensure all project tasks are completed on time and with creativity, bringing fresh ideas and energy to the work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section id="clients">
+  <div class="clients-header fade-up">
+    <div class="section-label">Past Clients</div>
+    <h2 class="section-title">Brands we've<br>worked with</h2>
+    <p class="section-body">
+      From local startups to growing consumer brands, we've partnered with companies across industries to sharpen their marketing strategies and fuel their growth.
+    </p>
+  </div>
+  <div class="clients-grid fade-up">
+    <div class="client-card">ASICS</div>
+    <div class="client-card">Better Than Belts</div>
+    <div class="client-card">Kobe's</div>
+    <div class="client-card">Bibite</div>
+    <div class="client-card">LaunchPad</div>
+    <div class="client-card">Give & Glow</div>
+    <div class="client-card">Inprove</div>
+    <div class="client-card">SellMate</div>
+    <div class="client-card">Rooted Living</div>
+    <div class="client-card">Amasu</div>
+    <div class="client-card">Spot Easy</div>
+    <div class="client-card">Boston Fiber Company</div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="fade-up">
+    <div class="section-label">Our Impact</div>
+    <h2 class="section-title">Results that speak<br>for themselves</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial featured fade-up">
+      <div class="testimonial-quote">"</div>
+      <div class="testimonial-stat">📈 50% Instagram growth in 4 months</div>
+      <p class="testimonial-text">NUMAC played a key role in diversifying our social media content strategy, helping us reach a broader audience and boost engagement. They also collaborated with us to develop a tailored content strategy for SideChat, providing multiple iterations of creative ideas to test and refine our approach. As a result, our Instagram following grew by 50% over four months, compared to just 13% growth in the four months prior to our engagement with NUMAC.</p>
+      <div class="testimonial-source">— Spot Easy</div>
+    </div>
+    <div class="testimonial fade-up">
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">The most valuable part of my experience with NUMAC was the consistent bi-weekly stream of fresh, creative ideas. Their ability to revamp our content kept our social media presence dynamic and engaging. I especially appreciated how the NUMAC team used the social media analytics I gave them to test and support their recommendations with data-driven insights.</p>
+      <div class="testimonial-source">— Spot Easy</div>
+    </div>
+    <div class="testimonial fade-up">
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">NUMAC really helped create marketing materials including printed signs, organizing a space in the shop for community engagement and more.</p>
+      <div class="testimonial-source">— Boston Fiber Company</div>
+    </div>
+    <div class="testimonial fade-up">
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">I had such a nice time working with the team. They were all kind and excited to work with us and I'm so happy to have had this experience. It has been extremely valuable for our business.</p>
+      <div class="testimonial-source">— Boston Fiber Company</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT / CTA -->
+<section id="contact">
+  <div class="contact-content">
+    <div class="section-label">Work With Us</div>
+    <h2 class="section-title">Ready to grow<br>your business?</h2>
+    <p class="section-body">
+      Our team of experienced student consultants is ready to tackle your marketing challenges. Fill out our client intake form and we'll be in touch to kick off your project.
+    </p>
+    <a href="https://docs.google.com/spreadsheets/d/1LVSIng693Eji4SMAgL8ogKa-fDQWznFAygEA5iRx7As/edit?gid=0#gid=0" target="_blank" class="cta-btn">
+      Request Consulting Services
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+    </a>
+    <p class="contact-note">It's completely free. No strings attached.</p>
+    <p class="contact-email">Questions? Reach us at <a href="mailto:consultingnuma@gmail.com">consultingnuma@gmail.com</a></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NUMA Consulting · Northeastern University</div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#clients">Clients</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="mailto:consultingnuma@gmail.com">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
