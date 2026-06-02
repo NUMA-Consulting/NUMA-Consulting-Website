@@ -277,7 +277,7 @@
   }
 
   /* SECTION LAYOUT */
-  section { padding: 6rem 4rem; }
+  section { padding: 4rem 4rem; }
 
   .section-label {
     font-size: 0.75rem;
@@ -389,7 +389,7 @@
   /* SERVICES / TEAM */
   #team {
     background: var(--cream);
-    padding: 6rem 4rem;
+    padding: 4rem 4rem;
   }
 
   .team-header {
@@ -531,10 +531,78 @@
 
   .coop-item:hover .coop-name { color: var(--gold); }
 
+
+  /* SERVICES */
+  #services {
+    background: var(--green-900);
+    padding: 4rem 4rem;
+    text-align: center;
+  }
+
+  #services .section-label {
+    justify-content: center;
+    color: var(--green-300);
+  }
+
+  #services .section-label::before { display: none; }
+
+  #services .section-title {
+    color: white;
+    margin-bottom: 3rem;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .service-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 2rem 1.75rem;
+    text-align: left;
+    transition: all 0.25s;
+  }
+
+  .service-card:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-3px);
+  }
+
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .service-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .service-desc {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 900px) {
+    .services-grid { grid-template-columns: 1fr; }
+  }
+
   /* CLIENTS */
   #clients {
     background: var(--white);
-    padding: 6rem 4rem;
+    padding: 4rem 4rem;
   }
 
   .clients-header {
@@ -577,7 +645,7 @@
   /* IMPACT */
   #impact {
     background: var(--cream);
-    padding: 6rem 4rem;
+    padding: 4rem 4rem;
   }
 
   .testimonials-grid {
@@ -640,7 +708,7 @@
   /* CTA */
   #contact {
     background: var(--green-900);
-    padding: 8rem 4rem;
+    padding: 5rem 4rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -851,6 +919,47 @@
       <p style="font-size:1rem;line-height:1.7;color:rgba(255,255,255,0.8);font-weight:300;position:relative;z-index:1;">
         <span style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--gold);line-height:0;vertical-align:-0.6rem;">"</span>Our consultants bring real-world co-op and internship experience from leading organizations, channeling that expertise into meaningful marketing work for our partners.<span style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--gold);line-height:0;vertical-align:-0.6rem;">"</span>
       </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="fade-up">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Our Services</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <span class="service-icon">📱</span>
+      <div class="service-title">Social Media Strategy</div>
+      <p class="service-desc">We develop tailored content strategies, optimize posting schedules, and use analytics to grow your audience and boost engagement across all platforms.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">🎨</span>
+      <div class="service-title">Brand Identity & Positioning</div>
+      <p class="service-desc">From messaging frameworks to visual identity, we help you define and communicate what makes your brand unique in a crowded market.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">📊</span>
+      <div class="service-title">Market Research & Analysis</div>
+      <p class="service-desc">We conduct competitive analysis, consumer research, and data-driven insights to help you make informed marketing decisions.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">✍️</span>
+      <div class="service-title">Content Creation</div>
+      <p class="service-desc">Our team produces creative content — from copy and graphics to marketing materials — designed to resonate with your target audience.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">📣</span>
+      <div class="service-title">Campaign Development</div>
+      <p class="service-desc">We design and execute end-to-end marketing campaigns with clear goals, creative execution, and measurable results.</p>
+    </div>
+    <div class="service-card fade-up">
+      <span class="service-icon">🤝</span>
+      <div class="service-title">Go-To-Market Strategy</div>
+      <p class="service-desc">Launching a product or entering a new market? We build actionable go-to-market plans that set you up for a strong, successful launch.</p>
     </div>
   </div>
 </section>
